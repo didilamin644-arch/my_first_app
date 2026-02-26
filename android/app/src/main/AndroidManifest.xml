@@ -1,43 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.my_first_app">
-
-    <application
-        android:label="tamheen_ai"
-        android:icon="@mipmap/ic_launcher"
-        android:usesCleartextTraffic="true">
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:launchMode="singleTop"
-            android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:windowSoftInputMode="adjustResize">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-
-        </activity>
-
-        <meta-data
-            android:name="flutterEmbedding"
-            android:value="2" />
-
-    </application>
-</manifest>
-EOFflutter clean
-flutter pub get
-git add .
-git commit -m "fix: repair broken AndroidManifest.xml"
-git pushgit push
-git push origin main
-
-cat <<EOF > android/app/src/main/AndroidManifest.xml
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.my_first_app">
     <application
         android:label="my_first_app"
         android:icon="@mipmap/ic_launcher">
