@@ -1,5 +1,5 @@
-ame: my_first_app
-description: "Gemini AI Vision App"
+name: my_first_app
+description: "Gemini Vision Chat"
 publish_to: 'none'
 version: 1.0.0+1
 
