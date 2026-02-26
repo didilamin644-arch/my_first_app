@@ -1,36 +1,35 @@
 name: Build Flutter APK
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
-      # 1. إضافة Java (هذه هي الخطوة الناقصة)
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu' # أو 'temurin'
+          distribution: 'zulu'
           java-version: '17'
 
-      # 2. إعداد Flutter
       - uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          # يُفضل تحديد الإصدار لتجنب المفاجآت مستقبلاً
-          # flutter-version: '3.19.0' 
-          
+
       - name: Fix Android Permissions
-        run: chmod +x android/gradlew
-        
-      - run: flutter pub get
-      
-      # 3. بناء الـ APK
-      - run: flutter build apk --release
-      
+        run: find . -name "gradlew" -exec chmod +x {} +
+
+      - name: Get Dependencies
+        run: flutter pub get
+        # إذا كان المشروع في مجلد فرعي، أضف السطر التالي:
+        # working-directory: my_first_app 
+
+      - name: Build APK
+        run: flutter build apk --release
+        # working-directory: my_first_app
+
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: release-apk
-          path: build/app/outputs/flutter-apk/app-release.apk
+          path: "**/build/app/outputs/flutter-apk/app-release.apk" # النجمتين للبحث في كل المجلدات
