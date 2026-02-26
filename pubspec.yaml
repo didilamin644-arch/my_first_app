@@ -1,16 +1,17 @@
-name: my_first_app
-description: "A new Flutter project."
+ame: my_first_app
+description: "Gemini AI Vision App"
 publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=3.11.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
   http: ^1.1.0
-  cupertino_icons: ^1.0.8
+  image_picker: ^1.0.4
+  cupertino_icons: ^1.0.2
 
 dev_dependencies:
   flutter_test:
