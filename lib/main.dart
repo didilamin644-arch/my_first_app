@@ -2,55 +2,97 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-void main() => runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: AiApp()));
+void main() => runApp(MaterialApp(
+      home: AIChat(),
+      debugShowCheckedModeBanner: false,
+    ));
 
-class AiApp extends StatefulWidget {
-  const AiApp({super.key});
+class AIChat extends StatefulWidget {
   @override
-  State<AiApp> createState() => _AiAppState();
+  _AIChatState createState() => _AIChatState();
 }
 
-class _AiAppState extends State<AiApp> {
-  final TextEditingController _input = TextEditingController();
-  String _response = "مرحباً! أنا مساعدك الذكي. اسألني أي شيء...";
-  bool _loading = false;
+class _AIChatState extends State<AIChat> {
+  final TextEditingController _controller = TextEditingController();
+  String _response = "مرحباً! أنا مساعدك الذكي، كيف يمكنني مساعدتك اليوم؟";
+  
+  // مفتاح الذكاء الخاص بك الذي قمت بإنشائه
+  final String apiKey = "AIzaSyB1po-OkPEhOWkxe9LrAvz24CH-LWYMheA"; 
 
-  void _getAiAnswer() async {
-    if (_input.text.isEmpty) return;
-    setState(() { _loading = true; _response = "جاري التفكير..."; });
+  Future<void> askAI(String question) async {
+    if (question.isEmpty) return;
     
-    // محاكاة استجابة ذكية مؤقتاً لضمان عمل الواجهة
-    await Future.delayed(const Duration(seconds: 2));
+    setState(() => _response = "جاري التفكير...");
+    final url = Uri.parse("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$apiKey");
     
-    setState(() {
-      _response = "لقد سألت عن: '${_input.text}'. هذا التطبيق الآن يدعم الاتصال بالذكاء الاصطناعي عبر مكتبة http!";
-      _loading = false;
-      _input.clear();
-    });
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          "contents": [
+            {
+              "parts": [{"text": question}]
+            }
+          ]
+        }),
+      );
+      
+      final data = jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        setState(() => _response = data['candidates'][0]['content']['parts'][0]['text']);
+      } else {
+        setState(() => _response = "حدث خطأ في طلب الذكاء: ${data['error']['message']}");
+      }
+    } catch (e) {
+      setState(() => _response = "خطأ في الاتصال: تأكد من تشغيل الإنترنت.");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('AI Assistant'), backgroundColor: Colors.indigo),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Expanded(child: Container(
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(color: Colors.indigo[50], borderRadius: BorderRadius.circular(15)),
-              child: SingleChildScrollView(child: Text(_response, style: const TextStyle(fontSize: 18))),
-            )),
-            if (_loading) const LinearProgressIndicator(),
-            const SizedBox(height: 15),
-            TextField(controller: _input, decoration: InputDecoration(
-              hintText: 'اكتب سؤالك هنا...',
-              suffixIcon: IconButton(icon: const Icon(Icons.send), onPressed: _getAiAnswer),
-              border: OutlineInputBorder(borderRadius: BorderRadius.circular(15)),
-            )),
-          ],
-        ),
+      appBar: AppBar(
+        title: Text("المساعد الذكي Gemini"),
+        backgroundColor: Colors.blueAccent,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(20),
+                child: Text(
+                  _response,
+                  style: TextStyle(fontSize: 18),
+                  textDirection: TextDirection.rtl,
+                ),
+              ),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 4)]),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _controller,
+                    decoration: InputDecoration(hintText: "اسألني أي شيء...", border: InputBorder.none),
+                    textDirection: TextDirection.rtl,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send, color: Colors.blueAccent),
+                  onPressed: () {
+                    askAI(_controller.text);
+                    _controller.clear();
+                  },
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
