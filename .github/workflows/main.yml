@@ -7,7 +7,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.10.0'
+          channel: 'stable' # سيختار أحدث نسخة مستقرة تلقائياً
+      - run: chmod +x android/gradlew # خطوة سحرية لإعطاء صلاحيات البناء
       - run: flutter pub get
       - run: flutter build apk --release
       - name: Upload APK
