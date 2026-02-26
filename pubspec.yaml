@@ -1,5 +1,5 @@
-name: gemini_pro_app
-description: "Gemini AI Vision Final"
+name: my_first_app
+description: "Gemini AI Vision"
 publish_to: 'none'
 version: 1.0.0+1
 environment:
