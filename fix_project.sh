@@ -1,29 +1,7 @@
 #!/bin/bash
-echo "🔍 جاري فحص وإصلاح ملفات المشروع..."
+echo "🔍 جاري تحديث المشروع إلى Android v2 embedding..."
 
-# 1. إصلاح ملف pubspec.yaml
-cat <<EOP > pubspec.yaml
-name: my_first_app
-description: "Gemini AI Vision"
-publish_to: 'none'
-version: 1.0.0+1
-environment:
-  sdk: '>=3.0.0 <4.0.0'
-dependencies:
-  flutter:
-    sdk: flutter
-  http: ^1.1.0
-  image_picker: ^1.0.4
-  cupertino_icons: ^1.0.2
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  flutter_lints: ^2.0.0
-flutter:
-  uses-material-design: true
-EOP
-
-# 2. إصلاح ملف AndroidManifest.xml
+# 1. إصلاح ملف AndroidManifest.xml وإضافة التضمين الجديد
 cat <<EOM > android/app/src/main/AndroidManifest.xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.my_first_app">
@@ -43,11 +21,35 @@ cat <<EOM > android/app/src/main/AndroidManifest.xml
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
     </application>
 </manifest>
 EOM
 
-echo "✅ تم إعادة ضبط التنسيق وحل مشاكل المسافات."
+# 2. تحديث ملف pubspec.yaml
+cat <<EOP > pubspec.yaml
+name: my_first_app
+description: "Gemini AI Project"
+publish_to: 'none'
+version: 1.0.0+1
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.1.0
+  image_picker: ^1.0.4
+  cupertino_icons: ^1.0.2
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+flutter:
+  uses-material-design: true
+EOP
+
+echo "✅ تم التحديث بنجاح."
 flutter clean
 flutter pub get
-echo "🚀 المشروع الآن جاهز للرفع أو البناء!"
